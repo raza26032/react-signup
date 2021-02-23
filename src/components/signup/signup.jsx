@@ -1,33 +1,80 @@
+import React, { useState } from "react";
+import axios from "axios";
+import {
+    useHistory
+} from "react-router-dom";
 var FontAwesome = require('react-fontawesome')
 
-function signup() {
+function Signup() {
 
-    const url = "http://localhost:5000";
+    let url = 'http://localhost:5000'
+    let [change, setChange] = useState(true)
+    let [show, setShow] = useState()
 
-    function userSignup() {
+    let history = useHistory()
+    function handleClick() {
+        history.push("/login");
+    }
+
+    function userSignup(event) {
+        event.preventDefault();
+
+        let name = document.getElementById('name').value
+        let email = document.getElementById('email').value
+        let password = document.getElementById('password').value
+        let phone = document.getElementById('phone').value
+        let gender = document.getElementById('gender').value
+        let newData = {
+            name: name,
+            email: email,
+            password: password,
+            phone: phone,
+            gender: gender
+        }
+
         axios({
             method: 'post',
             url: url + '/signup',
-            data: {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value.toLowerCase(),
-                password: document.getElementById('password').value,
-                phone: document.getElementById('phone').value,
-                gender: document.getElementById('gender').value,
-            },
+            data: newData,
             withCredentials: true
         }).then((response) => {
             if (response.data.status === 200) {
-                alert(response.data.message)
-                location.href = "../login.html"
-            } else {
-                alert(response.data.message);
+                setChange(false)
+            }
+            else {
+                history.push("/signup");
+                setShow(response.data.message)
             }
         }).catch((error) => {
             console.log(error);
         });
     }
 
+    // const url = "http://localhost:5000";
+
+    // function userSignup() {
+    //     axios({
+    //         method: 'post',
+    //         url: url + '/signup',
+    //         data: {
+    //             name: document.getElementById('name').value,
+    //             email: document.getElementById('email').value.toLowerCase(),
+    //             password: document.getElementById('password').value,
+    //             phone: document.getElementById('phone').value,
+    //             gender: document.getElementById('gender').value,
+    //         },
+    //         withCredentials: true
+    //     }).then((response) => {
+    //         if (response.data.status === 200) {
+    //             alert(response.data.message)
+    //             location.href = "../login.html"
+    //         } else {
+    //             alert(response.data.message);
+    //         }
+    //     }).catch((error) => {
+    //         console.log(error);
+    //     });
+    // }
 
     return (
         <div>
